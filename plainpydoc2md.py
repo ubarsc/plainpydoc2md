@@ -111,7 +111,8 @@ def findAllModules(cmdargs):
                     modObj = doImport(modinfo.name)
                     if modObj is not None:
                         modulelist.append(modObj)
-                # Not yet sure what to do with package docstrings, so ignoring them
+                # Not yet sure what to do with package docstrings, so
+                # ignoring them
 
     return modulelist
 
@@ -245,7 +246,7 @@ def processMethod(obj, classname, f):
     # Hide all special methods except __init__, which is escaped with '\'
     if methname.startswith("__") and methname.endswith("__"):
         if methname == "__init__":
-            methname = "\_\_init\_\_"
+            methname = "\\_\\_init\\_\\_"
         else:
             methname = None
 
