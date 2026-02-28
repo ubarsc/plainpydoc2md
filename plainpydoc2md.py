@@ -130,17 +130,19 @@ def openOutfile(modObj, cmdargs):
     Open the output Markdown file for the given module
     """
     modName = modObj.__name__
+    outdir = cmdargs.outdir
     if cmdargs.noflatten:
         subpkglist = modName.split('.')
-        outdir = cmdargs.outdir
         if len(subpkglist) > 1:
             subdirs = os.path.join(*subpkglist[:-1])
             outdir = os.path.join(cmdargs.outdir, subdirs)
         filename = os.path.join(outdir, f"{subpkglist[-1]}.md")
-        if not os.path.isdir(outdir):
-            os.makedirs(outdir)
     else:
-        filename = os.path.join(cmdargs.outdir, f"{modName}.md")
+        filename = os.path.join(outdir, f"{modName}.md")
+
+    if not os.path.isdir(outdir):
+        os.makedirs(outdir)
+
     f = open(filename, 'w')
     print(f"# {modName}", file=f)
     return f
