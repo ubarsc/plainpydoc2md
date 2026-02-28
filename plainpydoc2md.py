@@ -94,25 +94,19 @@ def findAllModules(cmdargs):
         if pkgdir not in sys.path:
             sys.path.append(pkgdir)
         pkg = doImport(pkgname)
-        if not hasattr(pkg, '__path__'):
-            # This is a single module, rather than a package, so we don't
-            # need to search it
-            modulelist = [pkg]
-        else:
+        modulelist = [pkg]
+        if hasattr(pkg, '__path__'):
             # This is genuinely a package, so we search recursively for
             # modules and sub-packages
             if pkgdir == '':
                 pkgdirlist = pkg.__path__
             else:
                 pkgdirlist = [inputStr]
-            modulelist = []
+            modulelist = [pkg]
             for modinfo in pkgutil.walk_packages(pkgdirlist, pkgname + '.'):
-                if not modinfo.ispkg:
-                    modObj = doImport(modinfo.name)
-                    if modObj is not None:
-                        modulelist.append(modObj)
-                # Not yet sure what to do with package docstrings, so
-                # ignoring them
+                modObj = doImport(modinfo.name)
+                if modObj is not None:
+                    modulelist.append(modObj)
 
     return modulelist
 
@@ -152,9 +146,6 @@ def processModule(modObj, cmdargs):
     modDoc = inspect.getdoc(modObj)
     members = inspect.getmembers(modObj)
 
-    f = openOutfile(modObj, cmdargs)
-    writeDocstring(f, modDoc, indent=4)
-
     classList = []
     funcList = []
     valueList = []
@@ -172,6 +163,13 @@ def processModule(modObj, cmdargs):
         elif (not importedVal(modFile, obj) and
                 not (hidePrivate and isPrivate(name))):
             valueList.append((name, obj))
+
+    emptyModule = (modDoc is None and len(classList) == 0 and
+                   len(funcList) == 0 and len(valueList) == 0)
+
+    if not emptyModule:
+        f = openOutfile(modObj, cmdargs)
+        writeDocstring(f, modDoc, indent=4)
 
     if len(classList) > 0:
         print("## Classes", file=f)
