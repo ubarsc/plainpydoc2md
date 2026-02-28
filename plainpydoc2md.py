@@ -45,9 +45,6 @@ def getCmdargs():
     if cmdargs.noflatten:
         raise NotImplementedError(
             "The --noflatten option is not yet implemented")
-    if cmdargs.includeprivate:
-        raise NotImplementedError(
-            "The --includeprivate option is not yet implemented")
 
     return cmdargs
 
@@ -158,22 +155,25 @@ def processModule(modObj, cmdargs):
     classList = []
     funcList = []
     valueList = []
+    hidePrivate = not cmdargs.includeprivate
 
     for (name, obj) in members:
-        if inspect.isclass(obj) and not importedVal(modFile, obj):
+        if (inspect.isclass(obj) and not importedVal(modFile, obj) and
+                not (hidePrivate and isPrivate(name))):
             classList.append(obj)
-        elif inspect.isfunction(obj) and not importedVal(modFile, obj):
+        elif (inspect.isfunction(obj) and not importedVal(modFile, obj) and
+                not (hidePrivate and isPrivate(name))):
             funcList.append(obj)
         elif inspect.ismodule(obj):
             pass
         elif (not importedVal(modFile, obj) and
-                not (name.startswith('__') or name.endswith('__'))):
+                not (hidePrivate and isPrivate(name))):
             valueList.append((name, obj))
 
     if len(classList) > 0:
         print("## Classes", file=f)
         for obj in classList:
-            processClass(obj, f)
+            processClass(obj, f, hidePrivate)
     if len(funcList) > 0:
         print("## Functions", file=f)
         for obj in funcList:
@@ -197,6 +197,13 @@ def importedVal(modFile, obj):
     return (objFile is not None and objFile != modFile)
 
 
+def isPrivate(name):
+    """
+    Return True if name is private by convention
+    """
+    return (name.startswith('_'))
+
+
 def writeDocstring(f, docString, indent):
     """
     Copy the given docstring into the output file, with suitable indentation
@@ -212,7 +219,7 @@ def writeDocstring(f, docString, indent):
     print(file=f)
 
 
-def processClass(obj, f):
+def processClass(obj, f, hidePrivate):
     """
     Output Markdown for the given class object
     """
@@ -223,7 +230,8 @@ def processClass(obj, f):
 
     members = inspect.getmembers(obj)
     for (objname, subobj) in members:
-        if inspect.ismethod(subobj) or inspect.isfunction(subobj):
+        if ((inspect.ismethod(subobj) or inspect.isfunction(subobj)) and
+                not (hidePrivate and isPrivate(objname))):
             processMethod(subobj, classname, f)
 
 
