@@ -51,7 +51,7 @@ def getCmdargs():
 
 
 def mainCmd():
-    "Main command"
+    "Main routine"
     cmdargs = getCmdargs()
 
     modulelist = findAllModules(cmdargs)
