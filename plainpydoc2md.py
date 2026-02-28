@@ -3,7 +3,8 @@
 Convert plain Python docstrings into Markdown files
 
 This is intended for simple projects, where things like Sphinx and ReadTheDocs
-are more complex than desired.
+are more complex than desired. The main value in writing Markdown is that
+it can be rendered directly in a web browser by Github.
 
 This scripts reads one or more Python modules and generates corresponding
 Markdown (.md) files with the docstrings layed out in a simple but readable
@@ -27,7 +28,11 @@ __version__ = '1.0.0'
 
 def getCmdargs():
     "Get command line arguments"
-    p = argparse.ArgumentParser()
+    p = argparse.ArgumentParser(description="""
+        Convert plain Python docstrings into Markdown files. The main value
+        in writing Markdown is that it can be rendered directly in a web
+        browser by Github
+        """)
     p.add_argument("-i", "--input", help=("Input specification. Can be " +
         "either a Python filename, a directory containing .py files, " +
         "a Python package name, or the top directory of a Python package"))
