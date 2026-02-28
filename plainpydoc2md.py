@@ -35,8 +35,8 @@ def getCmdargs():
         help="Output directory to write Markdown files")
     p.add_argument("--flatten", default=False, action="store_true",
         help=("Flatten any directory structure and place all output files " +
-              "in one directory (default places output files in corresponding " +
-              "directory structure)"))
+              "in one directory (default places output files in " +
+              "corresponding directory structure)"))
     cmdargs = p.parse_args()
     return cmdargs
 
@@ -55,11 +55,6 @@ def findAllModules(cmdargs):
     Find all the modules to be processed. Return a list of the imported
     module objects
     """
-    
-    # Use pkgutil.iter_modules() to find all the modules and sub-packages in a package or a directory
-    # Use pkgutil.walk_packages to find sub-packages only.
-    # Update: Should use these, but they seem to be very delicate and flaky, so I may write my own
-
     if os.path.isfile(cmdargs.input):
         (moddir, modname) = os.path.split(cmdargs.input)
         if modname.endswith('.py'):
@@ -82,7 +77,8 @@ def findAllModules(cmdargs):
             if modObj is not None:
                 modulelist.append(modObj)
     else:
-        # Assume we have a package, either as path to top dir or simple package name
+        # Assume we have a package, either as path to top dir or simple
+        # package name
         (pkgdir, pkgname) = os.path.split(cmdargs.input)
         if pkgdir not in sys.path:
             sys.path.append(pkgdir)
@@ -118,17 +114,6 @@ def doImport(modname):
     return modObj
 
 
-def modulesFromPackage(pkgdir, pkgname):
-    """
-    Recursively import all modules in the given package.
-
-    Return a list of the module objects
-
-    """
-
-    return modulelist
-
-
 def openOutfile(modObj, cmdargs):
     """
     Open the output Markdown file for the given module
@@ -162,7 +147,7 @@ def processModule(modObj, cmdargs):
             funcList.append(obj)
         elif inspect.ismodule(obj):
             pass
-        elif (not importedVal(modFile, obj) and 
+        elif (not importedVal(modFile, obj) and
                 not (name.startswith('__') or name.endswith('__'))):
             valueList.append((name, obj))
 
@@ -182,8 +167,9 @@ def processModule(modObj, cmdargs):
 
 def importedVal(modFile, obj):
     """
-    Check if obj is imported from another file, returns True if so. This is used
-    to exclude things which have been imported into this module
+    Check if obj is imported from another file, returns True if so.
+
+    This is used to exclude things which have been imported into this module
     """
     try:
         objFile = inspect.getsourcefile(obj)
@@ -196,7 +182,7 @@ def writeDocstring(f, docString, indent):
     """
     Copy the given docstring into the output file, with suitable indentation
     """
-    indentStr = indent*' '
+    indentStr = indent * ' '
     lines = []
     if docString is not None:
         lines = docString.split('\n')
@@ -238,7 +224,7 @@ def processMethod(obj, classname, f):
     Output Markdown for the given method of the given class
     """
     methname = obj.__name__
-    # Hide all special methods except __init__ (which has to be escaped with '\')
+    # Hide all special methods except __init__, which is escaped with '\'
     if methname.startswith("__") and methname.endswith("__"):
         if methname == "__init__":
             methname = f"\\{methname}"
@@ -247,7 +233,8 @@ def processMethod(obj, classname, f):
 
     if methname is not None:
         sigStr = str(inspect.signature(obj))
-        print("#### &nbsp;&nbsp;&nbsp;&nbsp;", f"{classname}.{methname}{sigStr}", file=f)
+        fullMethodStr = f"{classname}.{methname}{sigStr}"
+        print("#### &nbsp;&nbsp;&nbsp;&nbsp;", fullMethodStr, file=f)
         docstr = inspect.getdoc(obj)
         writeDocstring(f, docstr, indent=8)
 
