@@ -87,7 +87,10 @@ def findAllModules(cmdargs):
     else:
         # Assume we have a name to import, either as path to package top dir
         # or simple package/module name
-        (pkgdir, pkgname) = os.path.split(cmdargs.input)
+        inputStr = cmdargs.input
+        if inputStr.endswith('/'):
+            inputStr = inputStr[:-1]
+        (pkgdir, pkgname) = os.path.split(inputStr)
         if pkgdir not in sys.path:
             sys.path.append(pkgdir)
         pkg = doImport(pkgname)
@@ -101,7 +104,7 @@ def findAllModules(cmdargs):
             if pkgdir == '':
                 pkgdirlist = pkg.__path__
             else:
-                pkgdirlist = [pkgdir]
+                pkgdirlist = [inputStr]
             modulelist = []
             for modinfo in pkgutil.walk_packages(pkgdirlist, pkgname + '.'):
                 if not modinfo.ispkg:
