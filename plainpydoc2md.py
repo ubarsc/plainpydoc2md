@@ -4,7 +4,7 @@ Convert plain Python docstrings into Markdown files
 
 This is intended for simple projects, where things like Sphinx and ReadTheDocs
 are more complex than desired. The main value in writing Markdown is that
-it can be rendered directly in a web browser by Github.
+Github will render it directly in a web browser.
 
 This scripts reads one or more Python modules and generates corresponding
 Markdown (.md) files with the docstrings layed out in a simple but readable
