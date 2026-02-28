@@ -230,9 +230,8 @@ def processClass(obj, f, hidePrivate):
 
     members = inspect.getmembers(obj)
     for (objname, subobj) in members:
-        if ((inspect.ismethod(subobj) or inspect.isfunction(subobj)) and
-                not (hidePrivate and isPrivate(objname))):
-            processMethod(subobj, classname, f)
+        if inspect.ismethod(subobj) or inspect.isfunction(subobj):
+            processMethod(subobj, classname, hidePrivate, f)
 
 
 def processFunction(obj, f):
@@ -246,17 +245,16 @@ def processFunction(obj, f):
     writeDocstring(f, docstr, indent=8)
 
 
-def processMethod(obj, classname, f):
+def processMethod(obj, classname, hidePrivate, f):
     """
     Output Markdown for the given method of the given class
     """
     methname = obj.__name__
     # Hide all special methods except __init__, which is escaped with '\'
-    if methname.startswith("__") and methname.endswith("__"):
-        if methname == "__init__":
-            methname = "\\_\\_init\\_\\_"
-        else:
-            methname = None
+    if methname == "__init__":
+        methname = "\\_\\_init\\_\\_"
+    elif hidePrivate and isPrivate(methname):
+        methname = None
 
     if methname is not None:
         sigStr = str(inspect.signature(obj))
