@@ -6,7 +6,7 @@ This is intended for simple projects, where things like Sphinx and ReadTheDocs
 are more complex than desired. The main value in writing Markdown is that
 Github will render it directly in a web browser.
 
-This scripts reads one or more Python modules and generates corresponding
+This script reads one or more Python modules and generates corresponding
 Markdown (.md) files with the docstrings layed out in a simple but readable
 fashion. The main point is that the docstrings are not parsed for further
 formatting, but rather they are just copied over as plain text. In most cases,
