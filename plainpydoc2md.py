@@ -247,7 +247,11 @@ def processClass(obj, f, hidePrivate):
     Output Markdown for the given class object
     """
     classname = obj.__name__
-    print("### class", classname, file=f)
+    baseclassNames = [c.__name__ for c in obj.__bases__ if c.__name__ != "object"]
+    fullClassname = classname
+    if len(baseclassNames) > 0:
+        fullClassname = f"{classname}({'.'.join(baseclassNames)})"
+    print("### class", fullClassname, file=f)
     docstr = inspect.getdoc(obj)
     writeDocstring(f, docstr, indent=INDENT_CLASS)
 
