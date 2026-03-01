@@ -185,7 +185,7 @@ def processModule(modObj, cmdargs):
             funcList.append(obj)
         elif inspect.ismodule(obj):
             pass
-        elif (not importedVal(modFile, obj) and
+        elif (not importedVal(modFile, obj) and not inspect.isbuiltin(obj) and
                 not (hidePrivate and isPrivate(name))):
             valueList.append((name, obj))
 
