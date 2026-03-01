@@ -25,12 +25,15 @@ import glob
 
 __version__ = '1.0.0'
 
-INDENT_BASE = 4    # Markdown for pre-formatted text
+# Markdown indent for pre-formatted text
+INDENT_BASE = 4
+
 # Other indent amounts are added to the base amount
 INDENT_MODULE = INDENT_BASE
 INDENT_CLASS = INDENT_BASE + 2
 INDENT_FUNCTION = INDENT_BASE + 4
-INDENT_METHOD = INDENT_BASE + 4
+INDENT_METHODHDR = INDENT_BASE + 2
+INDENT_METHOD = INDENT_METHODHDR + 4
 
 
 def getCmdargs():
@@ -291,10 +294,8 @@ def processMethod(obj, classname, hidePrivate, f):
     if methname is not None:
         sigStr = str(inspect.signature(obj))
         fullMethodStr = f"{classname}.{methname}{sigStr}"
-        # The number of &nbsp; characters was chosen to look right. However,
-        # because the method heading is rendered in a variable-width font,
-        # but the docstring is in a fixed-width font, this is not very robust
-        print("#### &nbsp;&nbsp;&nbsp;&nbsp;", fullMethodStr, file=f)
+        nbsp = INDENT_METHODHDR * '&nbsp;'
+        print("####", nbsp, fullMethodStr, file=f)
         docstr = inspect.getdoc(obj)
         writeDocstring(f, docstr, indent=INDENT_METHOD)
 
