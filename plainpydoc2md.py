@@ -240,8 +240,9 @@ def writeDocstring(f, docString, indent):
         lines = docString.split('\n')
 
     for line in lines:
-        print(indentStr, end='', file=f)
-        print(line, file=f)
+        if len(line.rstrip()) > 0:
+            print(indentStr, end='', file=f)
+        print(line.rstrip(), file=f)
     print(file=f)
 
 
