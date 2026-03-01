@@ -280,9 +280,7 @@ def processMethod(obj, classname, hidePrivate, f):
     """
     Output Markdown for the given method of the given class
     """
-    methname = obj.__name__
-    qualname = obj.__qualname__
-    methClassName = qualname.split('.')[0]
+    (methClassName, methname) = obj.__qualname__.split('.')
 
     # Hide all special methods except __init__, which is escaped with '\'
     if methname == "__init__":
