@@ -25,6 +25,13 @@ import glob
 
 __version__ = '1.0.0'
 
+INDENT_BASE = 4    # Markdown for pre-formatted text
+# Other indent amounts are added to the base amount
+INDENT_MODULE = INDENT_BASE
+INDENT_CLASS = INDENT_BASE + 2
+INDENT_FUNCTION = INDENT_BASE + 4
+INDENT_METHOD = INDENT_BASE + 4
+
 
 def getCmdargs():
     "Get command line arguments"
@@ -184,7 +191,7 @@ def processModule(modObj, cmdargs):
 
     if not emptyModule:
         f = openOutfile(modObj, cmdargs)
-        writeDocstring(f, modDoc, indent=4)
+        writeDocstring(f, modDoc, indent=INDENT_MODULE)
 
     if len(classList) > 0:
         print("## Classes", file=f)
@@ -242,7 +249,7 @@ def processClass(obj, f, hidePrivate):
     classname = obj.__name__
     print("### class", classname, file=f)
     docstr = inspect.getdoc(obj)
-    writeDocstring(f, docstr, indent=6)
+    writeDocstring(f, docstr, indent=INDENT_CLASS)
 
     members = inspect.getmembers(obj)
     for (objname, subobj) in members:
@@ -258,7 +265,7 @@ def processFunction(obj, f):
     sigStr = str(inspect.signature(obj))
     print("### def", name + sigStr, file=f)
     docstr = inspect.getdoc(obj)
-    writeDocstring(f, docstr, indent=8)
+    writeDocstring(f, docstr, indent=INDENT_FUNCTION)
 
 
 def processMethod(obj, classname, hidePrivate, f):
@@ -280,9 +287,12 @@ def processMethod(obj, classname, hidePrivate, f):
     if methname is not None:
         sigStr = str(inspect.signature(obj))
         fullMethodStr = f"{classname}.{methname}{sigStr}"
+        # The number of &nbsp; characters was chosen to look right. However,
+        # because the method heading is rendered in a variable-width font,
+        # but the docstring is in a fixed-width font, this is not very robust
         print("#### &nbsp;&nbsp;&nbsp;&nbsp;", fullMethodStr, file=f)
         docstr = inspect.getdoc(obj)
-        writeDocstring(f, docstr, indent=8)
+        writeDocstring(f, docstr, indent=INDENT_METHOD)
 
 
 if __name__ == "__main__":
