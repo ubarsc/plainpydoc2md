@@ -40,8 +40,8 @@ def getCmdargs():
     "Get command line arguments"
     p = argparse.ArgumentParser(description="""
         Convert plain Python docstrings into Markdown files. The main value
-        in writing Markdown is that Github will render it directly in a web
-        browser by Github
+        of writing Markdown is that it will be rendered directly in a web
+        browser when viewed on Github
         """)
     p.add_argument("-i", "--input", help=("Input specification. Can be " +
         "either a Python filename, a directory containing .py files, " +
