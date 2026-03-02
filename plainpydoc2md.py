@@ -44,8 +44,9 @@ def getCmdargs():
         browser when viewed on Github
         """)
     p.add_argument("-i", "--input", help=("Input specification. Can be " +
-        "either a Python filename, a directory containing .py files, " +
-        "a Python package name, or the top directory of a Python package"))
+        "the name of a package or module (i.e. something one might import), " +
+        "or a path to either a python file, the top directory of a package, " +
+        "or a non-package directory of .py files"))
     p.add_argument("-o", "--outdir",
         help="Output directory to write Markdown files")
     p.add_argument("--noflatten", default=False, action="store_true",
