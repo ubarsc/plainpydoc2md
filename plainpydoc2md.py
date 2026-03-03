@@ -75,6 +75,7 @@ def findAllModules(cmdargs):
     Find all the modules to be processed. Return a list of the imported
     module objects
     """
+    modulelist = []
     if os.path.isfile(cmdargs.input):
         (moddir, modname) = os.path.split(cmdargs.input)
         if modname.endswith('.py'):
@@ -181,7 +182,8 @@ def processModule(modObj, cmdargs):
         if (inspect.isclass(obj) and not importedVal(modFile, obj) and
                 not (hidePrivate and isPrivate(name))):
             classList.append(obj)
-        elif (inspect.isfunction(obj) and not importedVal(modFile, obj) and
+        elif ((inspect.isfunction(obj) or isNumbaFunc(obj)) and
+                not importedVal(modFile, obj) and
                 not (hidePrivate and isPrivate(name))):
             funcList.append(obj)
         elif inspect.ismodule(obj):
@@ -209,6 +211,13 @@ def processModule(modObj, cmdargs):
         print("## Values", file=f)
         for (name, val) in valueList:
             print(f"    {name} = {repr(val)}", file=f)
+
+
+def isNumbaFunc(obj):
+    """
+    Checks if the object is a jit-ed numba function
+    """
+    return (type(obj).__name__ == "CPUDispatcher")
 
 
 def importedVal(modFile, obj):
