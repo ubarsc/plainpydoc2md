@@ -2,7 +2,7 @@ How to create a release of plainpydoc2md.
 You will need the build package installed ("conda install build" or
 "pip install build").
 
-1. Merge a pull request to update the version number in ratzarr.py
+1. Merge a pull request to update the version number in plainpydoc2md.py
 2. Create the distribution tar.gz using
         python -m build
    This creates a tar.gz file under a subdirectory called dist/
