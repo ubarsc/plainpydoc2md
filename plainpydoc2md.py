@@ -75,6 +75,7 @@ def findAllModules(cmdargs):
     Find all the modules to be processed. Return a list of the imported
     module objects
     """
+    modulelist = []
     if os.path.isfile(cmdargs.input):
         (moddir, modname) = os.path.split(cmdargs.input)
         if modname.endswith('.py'):
